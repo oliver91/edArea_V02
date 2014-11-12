@@ -1,0 +1,29 @@
+@(friends: List[Friends])
+
+<html>
+    <head>
+        <title>edArea Your Frinds</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link rel="stylesheet" type="text/css" media="screen"
+        href="@routes.Assets.at("stylesheets/login.css")">
+
+    </head>
+    <body>
+        <header>
+            <a href="@routes.Application.index" id="logo">edArea All Users</a>
+        </header>
+
+        <ul>
+        @for(friend <- friends) {
+            <li>
+                <a href="###">@friend.friend_email</a>
+            </li>
+        }
+        </ul>
+
+        <dd>
+            <a href="@routes.Application.index()">Back</a>
+        </dd>
+
+    </body>
+</html>

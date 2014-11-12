@@ -1,0 +1,26 @@
+@(user: User)
+
+@main(user) {
+    <h1>Home Page</h1>
+    <div class="login">
+
+        <dl id="user">
+            <dt>@user.name <span>(@user.email)</span></dt>
+            <dd>
+                <a href="@routes.Application.logout()">Logout</a>
+            </dd>
+
+
+        </dl>
+    </div>
+
+    <dd>
+        <a href="@routes.Courses.creatingCourse()">Create Course</a>
+    </dd>
+    <dd>
+        <a href="@routes.Courses.showCourses()">Your Courses</a>
+    </dd>
+    <dd>
+        <a href="@routes.Users.showAll()">Add Users (Add friends)</a>
+    </dd>
+}

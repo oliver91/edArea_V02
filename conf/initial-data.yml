@@ -1,0 +1,14 @@
+- &bob !!models.User
+    email:          bob@gmail.com
+    name:           Bob
+    password:       secret
+
+- &dan !!models.User
+    email:          dan@gmail.com
+    name:           Dan
+    password:       secret
+
+- &jeff !!models.User
+    email:          jeff@gmail.com
+    name:           Jeff
+    password:       secret
