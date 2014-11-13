@@ -45,14 +45,16 @@ public class Users extends Controller
         }
 
 //        List<User> all = User.find.where().not(User.find.where().like("email", "%" + request().username() + "%"));
-        return ok(allUsers.render(all, Form.form(SelectFriend.class)));
+
+        if(!all.isEmpty())
+            return ok(allUsers.render(all, Form.form(SelectFriend.class)));
+        else
+            return redirect(routes.Users.showAllFriends());
     }
 
-    public static Result addFriend()
+
+    public static Result showAllFriends()
     {
-        Form<SelectFriend> sel_form = Form.form(SelectFriend.class).bindFromRequest();
-        String email = sel_form.get().email;
-        new Friends(request().username(), email).save();
         List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
 
         List<User> friendlyUsers = new ArrayList<>();
@@ -62,10 +64,51 @@ public class Users extends Controller
             Friends friend = litr.next();
             friendlyUsers.add(User.find.byId(friend.friend_email));
         }
-
-
-
         return ok(friendsList.render(friendlyUsers));
+    }
+
+
+
+    public static Result addFriend()
+    {
+        Form<SelectFriend> sel_form = Form.form(SelectFriend.class).bindFromRequest();
+        String email = sel_form.get().email;
+        int friendsId = email.hashCode()+request().username().hashCode();
+        new Friends(friendsId, request().username(), email).save();
+        List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
+
+        List<User> friendlyUsers = new ArrayList<>();
+        ListIterator<Friends> litr = friends.listIterator();
+        while(litr.hasNext())
+        {
+            Friends friend = litr.next();
+            friendlyUsers.add(User.find.byId(friend.friend_email));
+        }
+        return ok(friendsList.render(friendlyUsers));
+    }
+
+    public static Result removeFriend()
+    {
+        Form<SelectFriend> sel_form = Form.form(SelectFriend.class).bindFromRequest();
+        String email = sel_form.get().email;
+//        Friends friend =
+        Friends.find.where().and(Expr.like("friend_email", "%"+email+"%"), Expr.like("user_email", "%"+request().username()+"%")).findUnique().delete();
+
+
+        List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
+        List<User> friendlyUsers = new ArrayList<>();
+        ListIterator<Friends> litr = friends.listIterator();
+        while(litr.hasNext())
+        {
+            Friends friend = litr.next();
+            friendlyUsers.add(User.find.byId(friend.friend_email));
+        }
+//        return redirect(routes.Users.removeFriend());
+        if(friendlyUsers.isEmpty()) {
+            return redirect(routes.Users.showAll());
+        }else {
+            return ok(friendsList.render(friendlyUsers));
+        }
     }
 
     public static class SelectFriend

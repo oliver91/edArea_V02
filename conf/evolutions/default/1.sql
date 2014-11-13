@@ -14,8 +14,10 @@ create table course (
 ;
 
 create table friends (
+  id                        integer not null,
   user_email                varchar(255),
-  friend_email              varchar(255))
+  friend_email              varchar(255),
+  constraint pk_friends primary key (id))
 ;
 
 create table picture (
@@ -33,6 +35,8 @@ create table user (
 ;
 
 create sequence course_seq;
+
+create sequence friends_seq;
 
 create sequence picture_seq;
 
@@ -56,6 +60,8 @@ drop table if exists user;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 drop sequence if exists course_seq;
+
+drop sequence if exists friends_seq;
 
 drop sequence if exists picture_seq;
 
