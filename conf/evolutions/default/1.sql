@@ -20,6 +20,14 @@ create table friends (
   constraint pk_friends primary key (id))
 ;
 
+create table notification (
+  notification_id           integer not null,
+  email_from                varchar(255),
+  email_to                  varchar(255),
+  notification_message      varchar(255),
+  constraint pk_notification primary key (notification_id))
+;
+
 create table picture (
   id                        bigint not null,
   content                   blob,
@@ -38,6 +46,8 @@ create sequence course_seq;
 
 create sequence friends_seq;
 
+create sequence notification_seq;
+
 create sequence picture_seq;
 
 create sequence user_seq;
@@ -53,6 +63,8 @@ drop table if exists course;
 
 drop table if exists friends;
 
+drop table if exists notification;
+
 drop table if exists picture;
 
 drop table if exists user;
@@ -62,6 +74,8 @@ SET REFERENTIAL_INTEGRITY TRUE;
 drop sequence if exists course_seq;
 
 drop sequence if exists friends_seq;
+
+drop sequence if exists notification_seq;
 
 drop sequence if exists picture_seq;
 

@@ -22,9 +22,12 @@ GET         /image/:id             controllers.Courses.renderImage(id:  Long)
 GET         /id                    controllers.Courses.showCoursePage(id)
 
 GET         /allUsers              controllers.Users.showAll()
-GET         /friends             controllers.Users.showAllFriends()
+GET         /friends               controllers.Users.showAllFriends()
 POST        /friends               controllers.Users.addFriend()
 POST        /removeFriend          controllers.Users.removeFriend()
+
+GET         /notifications         controllers.Users.showNotifications()
+POST         /confirmFriend          controllers.Users.confirmFriend()
 
 
 

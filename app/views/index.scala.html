@@ -1,4 +1,4 @@
-@(user: User)
+@(user: User, notifications: List[Notification])
 
 @main(user) {
     <h1>Home Page</h1>
@@ -26,4 +26,8 @@
     <dd>
         <a href="@routes.Users.showAllFriends()">Your Friends</a>
     </dd>
+    <dd>
+        Your Notifications <a href="@routes.Users.showNotifications()" style="font-size: 20px; color: red;">@notifications.size</a>
+    </dd>
+
 }

@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.Query;
 import models.Friends;
+import models.Notification;
 import models.User;
 import play.data.Form;
 import play.mvc.Controller;
@@ -11,6 +12,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import views.html.allUsers;
 import views.html.friendsList;
+import views.html.notifications;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +77,11 @@ public class Users extends Controller
         String email = sel_form.get().email;
         int friendsId = email.hashCode()+request().username().hashCode();
         new Friends(friendsId, request().username(), email).save();
-        List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
 
+        int notification_id = email.hashCode()+request().username().hashCode();
+        new Notification(notification_id, request().username(), email, "User "+User.find.byId(request().username()).name+" inviting you to friends").save();
+
+        List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
         List<User> friendlyUsers = new ArrayList<>();
         ListIterator<Friends> litr = friends.listIterator();
         while(litr.hasNext())
@@ -95,6 +100,7 @@ public class Users extends Controller
         Friends.find.where().and(Expr.like("friend_email", "%"+email+"%"), Expr.like("user_email", "%"+request().username()+"%")).findUnique().delete();
 
 
+
         List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
         List<User> friendlyUsers = new ArrayList<>();
         ListIterator<Friends> litr = friends.listIterator();
@@ -110,6 +116,36 @@ public class Users extends Controller
             return ok(friendsList.render(friendlyUsers));
         }
     }
+
+    public static Result showNotifications()
+    {
+        List<Notification> notificationsList = new ArrayList<>();
+        notificationsList = Notification.find.where().like("email_to", "%"+request().username()+"%").findList();
+        return ok(notifications.render(notificationsList));
+    }
+
+    public static Result confirmFriend()
+    {
+        Form<SelectFriend> sel_form = Form.form(SelectFriend.class).bindFromRequest();
+        String email = sel_form.get().email;
+        int friendsId = email.hashCode()+request().username().hashCode()/ DATE.hashCode();
+        new Friends(friendsId, request().username(), email).save();
+        Notification.find.where().and(Expr.like("email_to", "%"+request().username()+"%"), Expr.like("email_from", "%"+email+"%")).findUnique().delete();
+//        int notification_id = email.hashCode()+request().username().hashCode();
+//        new Notification(notification_id, request().username(), email, "User "+User.find.byId(request().username()).name+" inviting you to friends").save();
+
+        List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
+        List<User> friendlyUsers = new ArrayList<>();
+        ListIterator<Friends> litr = friends.listIterator();
+        while(litr.hasNext())
+        {
+            Friends friend = litr.next();
+            friendlyUsers.add(User.find.byId(friend.friend_email));
+        }
+        return ok(friendsList.render(friendlyUsers));
+//        return play.mvc.Results.TODO;
+    }
+
 
     public static class SelectFriend
     {

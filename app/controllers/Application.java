@@ -1,6 +1,7 @@
 package controllers;
 
 
+import models.Notification;
 import models.User;
 import play.data.Form;
 import play.mvc.Controller;
@@ -10,12 +11,17 @@ import views.html.index;
 import views.html.login;
 import views.html.registration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Application extends Controller
 {
     @Security.Authenticated(Secured.class)
     public static Result index()
     {
-        return ok(index.render(User.find.byId(request().username())));
+        List<Notification> notifications = new ArrayList<>();
+        notifications = Notification.find.where().like("email_to", "%"+request().username()+"%").findList();
+        return ok(index.render(User.find.byId(request().username()), notifications));
     }
 
 
