@@ -12,6 +12,7 @@ import play.mvc.Security;
 import views.html.allUsers;
 import views.html.friendsList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -51,11 +52,20 @@ public class Users extends Controller
     {
         Form<SelectFriend> sel_form = Form.form(SelectFriend.class).bindFromRequest();
         String email = sel_form.get().email;
-
         new Friends(request().username(), email).save();
         List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
 
-        return ok(friendsList.render(friends));
+        List<User> friendlyUsers = new ArrayList<>();
+        ListIterator<Friends> litr = friends.listIterator();
+        while(litr.hasNext())
+        {
+            Friends friend = litr.next();
+            friendlyUsers.add(User.find.byId(friend.friend_email));
+        }
+
+
+
+        return ok(friendsList.render(friendlyUsers));
     }
 
     public static class SelectFriend

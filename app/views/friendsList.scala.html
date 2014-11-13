@@ -1,4 +1,4 @@
-@(friends: List[Friends])
+@(friends: List[User])
 
 <html>
     <head>
@@ -16,7 +16,7 @@
         <ul>
         @for(friend <- friends) {
             <li>
-                <a href="###">@friend.friend_email</a>
+                <a href="###">@friend.name</a>
             </li>
         }
         </ul>
