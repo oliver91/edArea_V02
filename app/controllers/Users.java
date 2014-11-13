@@ -92,7 +92,6 @@ public class Users extends Controller
         return ok(friendsList.render(friendlyUsers));
     }
 
-    ////// Исправить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public static Result removeFriend()
     {
         Form<SelectFriend> sel_form = Form.form(SelectFriend.class).bindFromRequest();
@@ -119,7 +118,7 @@ public class Users extends Controller
             return ok(friendsList.render(friendlyUsers));
         }
     }
-//////////////////////////////////////////////////////////////////////////
+
 
 
 
