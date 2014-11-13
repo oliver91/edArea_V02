@@ -25,6 +25,7 @@ create table notification (
   email_from                varchar(255),
   email_to                  varchar(255),
   notification_message      varchar(255),
+  type                      integer,
   constraint pk_notification primary key (notification_id))
 ;
 

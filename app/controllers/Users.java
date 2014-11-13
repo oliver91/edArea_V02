@@ -79,7 +79,7 @@ public class Users extends Controller
         new Friends(friendsId, request().username(), email).save();
 
         int notification_id = email.hashCode()+request().username().hashCode();
-        new Notification(notification_id, request().username(), email, "User "+User.find.byId(request().username()).name+" inviting you to friends").save();
+        new Notification(notification_id, request().username(), email, "User "+User.find.byId(request().username()).name+" inviting you to friends", 1).save();
 
         List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
         List<User> friendlyUsers = new ArrayList<>();
@@ -92,13 +92,17 @@ public class Users extends Controller
         return ok(friendsList.render(friendlyUsers));
     }
 
+    ////// Исправить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public static Result removeFriend()
     {
         Form<SelectFriend> sel_form = Form.form(SelectFriend.class).bindFromRequest();
         String email = sel_form.get().email;
-//        Friends friend =
+
         Friends.find.where().and(Expr.like("friend_email", "%"+email+"%"), Expr.like("user_email", "%"+request().username()+"%")).findUnique().delete();
 
+
+            int notification_id = email.hashCode() + request().username().hashCode();
+            new Notification(notification_id, request().username(), email, "User " + User.find.byId(request().username()).name + " removed you from friends", 2).save();
 
 
         List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
@@ -109,13 +113,15 @@ public class Users extends Controller
             Friends friend = litr.next();
             friendlyUsers.add(User.find.byId(friend.friend_email));
         }
-//        return redirect(routes.Users.removeFriend());
         if(friendlyUsers.isEmpty()) {
             return redirect(routes.Users.showAll());
         }else {
             return ok(friendsList.render(friendlyUsers));
         }
     }
+//////////////////////////////////////////////////////////////////////////
+
+
 
     public static Result showNotifications()
     {
@@ -143,6 +149,33 @@ public class Users extends Controller
             friendlyUsers.add(User.find.byId(friend.friend_email));
         }
         return ok(friendsList.render(friendlyUsers));
+    }
+
+    public static Result confirmRemoveFriend() {
+        Form<SelectFriend> sel_form = Form.form(SelectFriend.class).bindFromRequest();
+        String email = sel_form.get().email;
+
+        Friends.find.where().and(Expr.like("friend_email", "%"+email+"%"), Expr.like("user_email", "%"+request().username()+"%")).findUnique().delete();
+
+//        if(Notification.find.byId(email.hashCode()+request().username().hashCode())!= null) {
+//            int notification_id = email.hashCode() + request().username().hashCode();
+//            new Notification(notification_id, request().username(), email, "User " + User.find.byId(email).name + " removed you from friends", 2).save();
+//        }
+        Notification.find.where().like("email_from", "%"+email+"%").findUnique().delete();
+
+        List<Friends> friends = Friends.find.where().like("user_email", "%"+request().username()+"%").findList();
+        List<User> friendlyUsers = new ArrayList<>();
+        ListIterator<Friends> litr = friends.listIterator();
+        while(litr.hasNext())
+        {
+            Friends friend = litr.next();
+            friendlyUsers.add(User.find.byId(friend.friend_email));
+        }
+        if(friendlyUsers.isEmpty()) {
+            return redirect(routes.Users.showAll());
+        }else {
+            return ok(friendsList.render(friendlyUsers));
+        }
 //        return play.mvc.Results.TODO;
     }
 

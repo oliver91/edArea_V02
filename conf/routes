@@ -27,7 +27,8 @@ POST        /friends               controllers.Users.addFriend()
 POST        /removeFriend          controllers.Users.removeFriend()
 
 GET         /notifications         controllers.Users.showNotifications()
-POST         /confirmFriend          controllers.Users.confirmFriend()
+POST        /confirmFriend         controllers.Users.confirmFriend()
+POST         /confirmRemoveFriend  controllers.Users.confirmRemoveFriend()
 
 
 
